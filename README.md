@@ -31,7 +31,9 @@ Pick one of following:
 - Add any required resources to send a message to a SNS Topic whenever a new item is added to
 the DynamoDB Table.
     - The message can be either table updated or the content of the new item added.
+    
 OR
+
 - Implement any type of authentication to the API Gateway.
 
 ## Deliverables:
