@@ -9,12 +9,13 @@ receives a POST request the engineer is facing some issues and data is not being
 expected.
 
 The Cloudformation stack mainly deploys the following AWS resources:
-|Service|Description|
-|-------|-----------|
-|API Gateway|Handles the http traffic|
-|Role|Role to be used by Lambda Function|
+
+|Service        |Description|
+|---------------|-----------|
+|API Gateway    |Handles the http traffic|
+|Role           |Role to be used by Lambda Function|
 |Lambda Function|Extract data from the http request and update the database|
-|DynamoDB Table|NoSQL Database|
+|DynamoDB Table |NoSQL Database|
 
 ## Tasks
 Based on this scenario, please work on below tasks:
