@@ -65,16 +65,18 @@ Resources:
           - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: root
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - lambda:*
-            Resource: '*'
-
-
+        - PolicyName: lambdaExecPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: 'lambdaAccess'
+                Effect: 'Allow'
+                Action: 'lambda:*'
+                Resource: '*'
+              - Sid: 'dynamoAccess'
+                Effect: 'Allow'
+                Action: "dynamodb:PutItem"
+                Resource: !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoTable}"
   APIPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
