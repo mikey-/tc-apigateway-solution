@@ -2,12 +2,11 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Description: Tech Challenge #1 - 20190715
 
-
-
 Parameters:
   MyName:
     Type: String
     Description: Name of the Candidate
+    Default: Mikey
 
 Resources:
   DynamoTable:
@@ -77,6 +76,7 @@ Resources:
                 Effect: 'Allow'
                 Action: "dynamodb:PutItem"
                 Resource: !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoTable}"
+
   APIPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
@@ -102,14 +102,45 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: !Sub RestTechChallenge1_${MyName}
+      ApiKeySourceType: 'HEADER'
       EndpointConfiguration:
-        Types: 
+        Types:
           - REGIONAL
+
+  ApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn:
+      - ApiDeployment
+    Properties:
+      Description: RestTechChallenge1_ApiKey
+      Enabled: true
+      GenerateDistinctId: true
+      StageKeys:
+        - RestApiId: !Sub ${ApiRestApi}
+          StageName: 'v1'
+
+  ApiUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Sub ${ApiKey}
+      KeyType: API_KEY
+      UsagePlanId: !Sub ${ApiUsagePlan}
+
+  ApiUsagePlan:
+    DependsOn:
+      - ApiDeployment
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+        - ApiId: !Sub ${ApiRestApi}
+          Stage: 'v1'
+      Description: 'Usage Plan for Rest API'
+      UsagePlanName: RestTechChallenge1_UsagePlan
 
   ApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      ParentId: !GetAtt 
+      ParentId: !GetAtt
         - ApiRestApi
         - RootResourceId
       RestApiId: !Ref ApiRestApi
@@ -121,16 +152,17 @@ Resources:
       RestApiId: !Ref ApiRestApi
       ResourceId: !Ref ApiResource
       HttpMethod: POST
+      ApiKeyRequired: true
       AuthorizationType: NONE
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
-        Uri: !Join 
+        Uri: !Join
           - ''
           - - 'arn:aws:apigateway:'
             - !Ref 'AWS::Region'
             - ':lambda:path/2015-03-31/functions/'
-            - !GetAtt 
+            - !GetAtt
               - LambdaFunction
               - Arn
             - /invocations
@@ -139,7 +171,7 @@ Resources:
               application/json: '{}'
             ResponseParameters:
               method.response.header.Location: integration.response.body.headers.uid
-            StatusCode: 201
+            StatusCode: '201'
         PassthroughBehavior: NEVER
         RequestTemplates:
           application/json: '{ "team_name": $input.json(''team_name''), "team_country": $input.json(''team_country''), "team_desc": $input.json(''team_desc''), "team_rating": $input.json(''team_rating'')}'
@@ -150,7 +182,7 @@ Resources:
             application/json: Empty
           ResponseParameters:
             method.response.header.Location: true
-          StatusCode: 201
+          StatusCode: '201'
 
   ApiModel:
     Type: 'AWS::ApiGateway::Model'
@@ -161,14 +193,14 @@ Resources:
       Schema:
         title: Team
         type: object
-        properties: 
+        properties:
           team_country:
             type: string
           team_name:
             type: string
           team_desc:
             type: string
-          team_rating: 
+          team_rating:
             type: string
 
   ApiDeployment:
@@ -179,13 +211,12 @@ Resources:
     DependsOn:
       - ApiMethod
       - ApiModel
-      - ApiRestApi
       - APIPermission
 
 Outputs:
   RootUrl:
     Description: Root URL of the API gateway
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'https://'
         - !Ref ApiRestApi
