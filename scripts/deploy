@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+function display_usage_and_quit () {
+  echo "usage: deploy -c '<AWS_CLI_OPTION> ...' -s '<AWS_SUBCOMMAND_PARAMETER> ...'";
+  echo "    AWS_CLI_OPTION: Any AWS CLI options you want to pass through, e.g. '--profile mike --region us-east-2' ";
+  echo "    AWS_SUBCOMMAND_PARAMETERS: Any AWS subcommand parameters, e.g. '--stack-name cool-stack'";
+  echo "    Example:";
+  echo "        deploy -c '--profile contino-mikey --region us-east-2'";
+  echo "        deploy -s '--template-file cloudformation/tc-apigateway.yaml --stack-name mikey-test-stack --capabilities CAPABILITY_IAM'";
+  echo "";
+  exit 1;
+}
+
+while getopts ":c:s:" OPTION; do
+  case $OPTION in
+  c) TC_APIGATEWAY_AWS_CLI_OPTIONS="${OPTARG}"; ;;
+  s) TC_APIGATEWAY_AWS_SUBCOMMAND_PARAMETERS="${OPTARG}"; ;;
+  :)
+    echo "No argument specified, for option: $OPTARG"; ;;
+  \?)
+    echo "No option found: ${OPTARG}";
+    display_usage_and_quit;
+    ;;
+  esac
+done
+
+if [ -z "$TC_APIGATEWAY_AWS_CLI_OPTIONS" ]; then
+  echo "Error: AWS CLI Options (TC_APIGATEWAY_AWS_CLI_OPTIONS) is empty";
+  display_usage_and_quit;
+fi;
+
+if [ -z "$TC_APIGATEWAY_AWS_SUBCOMMAND_PARAMETERS" ]; then
+  echo "Error: AWS CLI Subcommand Parameters (TC_APIGATEWAY_AWS_SUBCOMMAND_PARAMETERS) is empty"
+  display_usage_and_quit;
+fi;
+
+DEPLOY_COMMAND="aws ${TC_APIGATEWAY_AWS_CLI_OPTIONS} cloudformation deploy ${TC_APIGATEWAY_AWS_SUBCOMMAND_PARAMETERS}";
+echo "Deploying stack with: $DEPLOY_COMMAND";
+
+$DEPLOY_COMMAND && exit;
+
+exit 1;
