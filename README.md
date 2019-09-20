@@ -174,8 +174,8 @@ Some things I'd love to do if I could spend some more time:
 
 HERE'S WHAT ELSE I THINK:
 
-It'd would be worth looking into the benefits of stylistic relating to
-stylistic elements of the challenge's documentation, code and templates.
+It'd would be worth looking into the benefits of improving the stylistic 
+elements of the challenge's documentation, code and templates.
 
 I probably complained about doing this test a lot, but I really did enjoy the
 process and found it to be very rewarding. Arguably the most valuable lessons
