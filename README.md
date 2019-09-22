@@ -11,16 +11,44 @@ Thank you for spending your time marking my solution and reading this :)
 
 ## [How To Play](https://www.youtube.com/embed/PVHx47Xyhow?start=0&end=2)
 
-This solution is directed by a [Makefile](Makefile) which allows you to
-overwrite the following variables:
-- **profile:** AWS CLI Options
-- **region:** AWS Region
-- **profile:** AWS Config Profile Name
-- **cli_opts:** All AWS CLI Options
-- **subcommand_opts:** AWS CLI Subcommand Parameters
-- **template:** path/to/template.file (or 3)
-- **stack_name:** Name your stacks to claim your stacks!
-- **capabilities:** "CAPABILITY_IAM"
+### Makefiles Not War
+
+This solution is directed by a [Makefile](Makefile) which:
+1. Sets some variables to a passed in value, or their defaults
+1. Runs a [deploy](scripts/deploy) script, with variable values passed in. 
+
+The variables set by the Makefile, which you can override, are listed below
+
+|   Variable Name |                             Description                          | Default Vault |  
+|----------------:|:-----------------------------------------------------------------|:--------------|
+|          region | AWS Region which in which all resources will be deployed         | us-east-1 
+|         profile | AWS CLI profile used to launch CloudFormation stacks             | contino-mikey
+|        cli_opts | AWS CLI options as single space-delimited string                 | --profile $(profile) --region $(region)
+|        template | Name of the AWS CLI profile used to launch CloudFormation stacks | ../cloudformation/tc_apigateway.file
+|      stack_name | Name your stacks to claim your stacks!                           | tc-apigateway-stack-<datetime-stamp>
+|    capabilities | Name of AWS Region which in which all resources will be deployed | CAPABILITY_IAM
+| subcommand_opts | AWS CLI Subcommand options as single space-delimited string      | --stack-name $(stack_name) --template-file $(template) --capabilities $(capabilities)
+
+### Deploy Stacks Not Soldiers
+
+The deploy script uses the AWS CLI subcommand `cloudformatiopn deploy`to deploy stacks. 
+
+You can run the deploy script without make, but it's important to
+note that the deploy script sets no defaults and it's parameters
+are simple, to allow flexibility. It's usage is like so: 
+
+`deploy -c '<AWS_CLI_OPTION> ...' -s '<AWS_SUBCOMMAND_PARAMETER> ...'"`
+
+It's important to note that there are no defaults set in this script. 
+The table below describes each option and gives examples.
+
+|              Option Name |                             Description             | Example Value |  
+|-------------------------:|:----------------------------------------------------|:--------------|
+|           AWS_CLI_OPTION | Options as single space-delimited string            | '--profile contino-mikey --region us-east-2'
+| AWS_SUBCOMMAND_PARAMETER | Subcommand options as single space-delimited string | '--template-file cloudformation/tc-apigateway.yaml --stack-name cool-stack --capabilities CAPABILITY_IAM'
+
+Thus, running the deplpoy script should look something like this:
+`deploy -c '--profile contino-mikey --region us-east-2' -s '--template-file cloudformation/tc-apigateway.yaml --stack-name cool-stack --capabilities CAPABILITY_IAM'`
 
 ### Dependencies
 
@@ -45,14 +73,12 @@ First, some simple steps to get you going:
 You should see an output similar to the following:
 
 ```output
-👨🏽‍💻 in tc-apigateway
+👨🏽‍💻 in tc-apigateway-solution
 make profile=<profile-name> deploy
-./scripts/deploy -c '--profile <profile-name> --region us-east-2' -s '--stack-name tc-apigateway-stack-20190918203619 --template-file ./cloudformation/tc_apigateway.yaml --capabilities CAPABILITY_IA
-M'
-Deploying stack with: aws --profile <profile-name> --region us-east-2 cloudformation deploy --stack-name tc-apigateway-stack-20190918203619 --template-file ./cloudformation/tc_apigateway.yaml --capa
-bilities CAPABILITY_IAM
+./scripts/deploy -c '--profile <profile-name> --region us-east-2' -s '--stack-name tc-apigateway-stack-20190918203619 --template-file ./cloudformation/tc_apigateway.yaml --capabilities CAPABILITY_IAM'
+Deploying stack with: aws --profile <profile-name> --region us-east-2 cloudformation deploy --stack-name tc-apigateway-stack-20190918203619 --template-file ./cloudformation/tc_apigateway.yaml --capabilities CAPABILITY_IAM
 
-Waiting for changeset to be created..
+Waiting for changeset to be created...
 Waiting for stack create/update to complete
 Successfully created/updated stack - tc-apigateway-stack-20190918203619
 ```
@@ -112,7 +138,7 @@ curl -L "https://907yi7vcia.execute-api.us-east-2.amazonaws.com/v1/add_new" \
 	-H "x-api-key: $(aws --profile <profile-name> --region us-east-2 apigateway get-api-keys --include-values --query items[*].value --output text)";
 ```
 
-Note that your API hey is never assigned to the environment or printed
+Note that your API hey is never assigned to a variable in the environment or printed
 anywhere (or contained in this repository).
 
 ## Tasks
@@ -136,7 +162,7 @@ Let's take a look at the tasks and what I managed to achieve
     - Thought about this a lot, I wonder if it shows; however, I'm doubtful
       that it does.  
 
--   [x] README a section with recommended improvement...
+-   [x] README a section with recommended improvements...
 
 ### Roadmap
 
