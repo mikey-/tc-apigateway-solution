@@ -5,8 +5,8 @@ function display_usage_and_quit () {
   echo "    AWS_CLI_OPTION: Any AWS CLI options you want to pass through, e.g. '--profile mike --region us-east-2' ";
   echo "    AWS_SUBCOMMAND_PARAMETERS: Any AWS subcommand parameters, e.g. '--stack-name cool-stack'";
   echo "    Example:";
-  echo "        deploy -c '--profile contino-mikey --region us-east-2'";
-  echo "        deploy -s '--template-file cloudformation/tc-apigateway.yaml --stack-name mikey-test-stack --capabilities CAPABILITY_IAM'";
+  echo "        deploy -c '--profile tc-mikey --region us-east-2'";
+  echo "        deploy -s '--template-file cloudformation/tc-apigateway.yaml --stack-name tc-mikey --capabilities CAPABILITY_IAM'";
   echo "";
   exit 1;
 }
