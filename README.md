@@ -1,7 +1,7 @@
 # API Gateway Challenge
 
-Here you'll find some information on my experience with the [Contino API
-Challenge](https://github.com/contino/tc-apigateway).
+Here you'll find some information on my experience with an API
+Challenge.
 
 ## Thank You
 
@@ -22,7 +22,7 @@ The variables set by the Makefile, which you can override, are listed below
 |   Variable Name |                             Description                          | Default Vault |  
 |----------------:|:-----------------------------------------------------------------|:--------------|
 |          region | AWS Region which in which all resources will be deployed         | us-east-1 
-|         profile | AWS CLI profile used to launch CloudFormation stacks             | contino-mikey
+|         profile | AWS CLI profile used to launch CloudFormation stacks             | tc-mikey
 |        cli_opts | AWS CLI options as single space-delimited string                 | --profile $(profile) --region $(region)
 |        template | Name of the AWS CLI profile used to launch CloudFormation stacks | ../cloudformation/tc_apigateway.file
 |      stack_name | Name your stacks to claim your stacks!                           | tc-apigateway-stack-<datetime-stamp>
@@ -44,11 +44,11 @@ The table below describes each option and gives examples.
 
 |              Option Name |                             Description             | Example Value |  
 |-------------------------:|:----------------------------------------------------|:--------------|
-|           AWS_CLI_OPTION | Options as single space-delimited string            | '--profile contino-mikey --region us-east-2'
+|           AWS_CLI_OPTION | Options as single space-delimited string            | '--profile tc-mikey --region us-east-2'
 | AWS_SUBCOMMAND_PARAMETER | Subcommand options as single space-delimited string | '--template-file cloudformation/tc-apigateway.yaml --stack-name cool-stack --capabilities CAPABILITY_IAM'
 
 Thus, running the deplpoy script should look something like this:
-`deploy -c '--profile contino-mikey --region us-east-2' -s '--template-file cloudformation/tc-apigateway.yaml --stack-name cool-stack --capabilities CAPABILITY_IAM'`
+`deploy -c '--profile tc-mikey --region us-east-2' -s '--template-file cloudformation/tc-apigateway.yaml --stack-name cool-stack --capabilities CAPABILITY_IAM'`
 
 ### Dependencies
 
